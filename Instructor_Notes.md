@@ -7,12 +7,14 @@ Python dictionaries documentation http://www.json.org/.
 PHP Arrays documentation http://php.net/manual/en/language.types.array.php.
 
 Ruby Hashes documentation http://www.tutorialspoint.com/ruby/ruby_hashes.htm.
+
 ----------------------------------
 You can download MongoDB for your platform from the official MongoDB page http://www.mongodb.org/downloads. You can also read specific MongoDB installation instructions http://docs.mongodb.org/manual/installation/.
 
 You do not need to install MongoDB on your machine for most of the exercises in this course, however for best learning outcome we recommend that you do it. It's fast and easy!
 
 MongoDB has a lot of drivers and client libraries http://docs.mongodb.org/manual/applications/drivers/. The one we will be using in this course is PyMongo http://api.mongodb.org/python/current/installation.html. See the official documentation for PyMongo installation instructions.
+
 -----------------------------------
 You need to install pymongo to run this code locally:
 
