@@ -45,8 +45,8 @@ If no hostname and credentials are supplied, mongoimport will try to connect to 
 ### Operators
 Start with $, e.g. $gt, $lt, $lte, $ne
 
-    query = {"population" : {"$gt" : 250000, "$lte" : 500000}"}
-    query = {"name" : {"$gt" : "X", "$lte" : "Y"}"}
+    query = {"population" : {"$gt" : 250000, "$lte" : 500000}}
+    query = {"name" : {"$gt" : "X", "$lte" : "Y"}}
     query = {"foundingDate" : {"gt" : datetime(1837, 1, 1)}}
     cities = db.cities.find(query)
     
@@ -64,3 +64,37 @@ To start mongo shell locally: Type following command in your terminal:
     > db.cities.find( {"governmentType" : {"$exists" : 1}} ).pretty()
 
 --------------------------------------
+
+### Regular expressions - Perl compatible (PCRE)
+    query = {"moto" : {"$regex" : "[Ff]riendship|[Hh]appiness"}}
+    
+### Structured data
+    db.autos.find({"modelYear" : {"$in" : [1965, 1966, 1967]}}).count()
+    db.autos.find({"modelYear" : {"$all" : [1965, 1966, 1967]}}).count()
+    db.autos.find({"dimensions.weight" : {"$gt" : 50000}})
+    
+---------------------------------------
+
+### Example code
+
+    def get_db():
+        from pymongo import MongoClient
+        client = MongoClient('localhost:27017')
+        db = client.examples
+        return db
+        
+    def in_query():
+        query = {"manufacturer" : "Ford Motor Company", "assembly" : {"$in" : ["Germany", "United Kingdom", "Japan"]}}
+        return query
+
+
+    if __name__ == "__main__":
+
+        db = get_db()
+        query = in_query()
+        autos = db.autos.find(query, {"name":1, "manufacturer":1, "assembly": 1, "_id":0})
+
+        print "Found autos:", autos.count()
+        import pprint
+        for a in autos:
+            pprint.pprint(a)
