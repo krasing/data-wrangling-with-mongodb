@@ -38,3 +38,26 @@ The command used in this video:
     mongoimport -db dbname -c collectionname --file input-file.json
 ```
 If no hostname and credentials are supplied, mongoimport will try to connect to the default localhost:27017
+
+--------------------------------------
+### Operators
+Start with $, e.g. $gt, $lt, $lte, $ne
+    query = {"population" : {"$gt" : 250000, "$lte" : 500000}"}
+    query = {"name" : {"$gt" : "X", "$lte" : "Y"}"}
+    query = {"foundingDate" : {"gt" : datetime(1837, 1, 1)}}
+    cities = db.cities.find(query)
+    
+[MongoDB Query Operators Reference](http://docs.mongodb.org/manual/reference/operator/query)
+
+--------------------------------------
+### Using shell commands
+To start mongo shell locally: Type following command in your terminal:
+
+    mongo
+    
+    > use examples
+    > db.cities.find()
+    > db.cities.find( {"governmentType" : {"$exists" : 1}} ).count()
+    > db.cities.find( {"governmentType" : {"$exists" : 1}} ).pretty()
+
+--------------------------------------
