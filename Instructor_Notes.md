@@ -98,3 +98,7 @@ To start mongo shell locally: Type following command in your terminal:
         import pprint
         for a in autos:
             pprint.pprint(a)
+
+### Add projection (specification how to display the results)
+
+    > db.tweets.find({"entities.hashtags" : {"$ne" : []}}, {"entities.hashtags.text" : 1, "_id" : 0})
