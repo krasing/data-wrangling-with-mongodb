@@ -42,6 +42,22 @@ The command used in this video:
 If no hostname and credentials are supplied, mongoimport will try to connect to the default localhost:27017
 
 --------------------------------------
+
+### Importing documents
+Preparing data from json:
+    db = client.examples
+    with open('arachnid.json') as f:
+        data = json.loads(f.read())
+
+Preparing data from csv: see [autos.py](./autos.py)
+
+data - list of dictionaries
+arachnid - collection
+        
+    for a in data:
+        db.arachnid.insert(a)
+
+--------------------------------------
 ### Operators
 Start with $, e.g. $gt, $lt, $lte, $ne
 
@@ -62,6 +78,8 @@ To start mongo shell locally: Type following command in your terminal:
     > db.cities.find()
     > db.cities.find( {"governmentType" : {"$exists" : 1}} ).count()
     > db.cities.find( {"governmentType" : {"$exists" : 1}} ).pretty()
+    > db.collection_names()
+
 
 --------------------------------------
 
@@ -101,4 +119,47 @@ To start mongo shell locally: Type following command in your terminal:
 
 ### Add projection (specification how to display the results)
 
-    > db.tweets.find({"entities.hashtags" : {"$ne" : []}}, {"entities.hashtags.text" : 1, "_id" : 0})
+    query = {"entities.hashtags" : {"$ne" : []}}
+    projection =  {"entities.hashtags.text" : 1, "_id" : 0}
+    result = db.tweets.find(query, projection)
+    
+param1: query document
+param2: projection documents
+
+### Updating (modifing existing documents) collectionname
+Using save command (in pymongo - method on collection object)
+Replace the document with the same _id. If no such document is available or the new document does not have _id field, a new record is added.
+
+    city = db.cities.find_one({"name" : "Munchen", "country" : "Germany"})
+    city["isoCountryCode"] = "DEU"
+    db.cities.save(city)
+    
+Using `update` command with $set operator
+
+    city = db.cities.update({"name" : "Munchen", "country" : "Germany"},
+                             {"$set" : {"isoCountryCode" : "DEU"} })
+
+To update multiple documents:
+    city = db.cities.update({"name" : "Munchen", "country" : "Germany"},
+                             {"$set" : {"isoCountryCode" : "DEU"} }, 
+                             multi = True)
+param1: query document
+param2: update documents
+to remove field: `{"$unset" : {"isoCountryCode" : ""}`
+
+If "$set" operator is not used the whole document will be replaced, not just the field:
+
+    city = db.cities.update({"name" : "Munchen", "country" : "Germany"},
+                             {"isoCountryCode" : "DEU" })
+                             
+Will lead to single field document.
+
+### Remove documents
+Remove documents satisfying some criteria:
+    db.cities.remove(querydocument)
+Remove an entire collection:
+    db.cities.drop()
+
+### MongDB console vs Python script:
+Python script: `db.cities.find_one()`
+MongDB console: `db.cities.findOne()`
