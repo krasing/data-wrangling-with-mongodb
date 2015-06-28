@@ -45,6 +45,7 @@ If no hostname and credentials are supplied, mongoimport will try to connect to 
 
 ### Importing documents
 Preparing data from json:
+
     db = client.examples
     with open('arachnid.json') as f:
         data = json.loads(f.read())
@@ -52,6 +53,7 @@ Preparing data from json:
 Preparing data from csv: see [autos.py](./autos.py)
 
 data - list of dictionaries
+
 arachnid - collection
         
     for a in data:
@@ -127,7 +129,9 @@ param1: query document
 param2: projection documents
 
 ### Updating (modifing existing documents) collectionname
+
 Using save command (in pymongo - method on collection object)
+
 Replace the document with the same _id. If no such document is available or the new document does not have _id field, a new record is added.
 
     city = db.cities.find_one({"name" : "Munchen", "country" : "Germany"})
@@ -140,11 +144,13 @@ Using `update` command with $set operator
                              {"$set" : {"isoCountryCode" : "DEU"} })
 
 To update multiple documents:
+
     city = db.cities.update({"name" : "Munchen", "country" : "Germany"},
                              {"$set" : {"isoCountryCode" : "DEU"} }, 
                              multi = True)
-param1: query document
-param2: update documents
+                             
+param1: query document; param2: update documents
+
 to remove field: `{"$unset" : {"isoCountryCode" : ""}`
 
 If "$set" operator is not used the whole document will be replaced, not just the field:
@@ -156,10 +162,15 @@ Will lead to single field document.
 
 ### Remove documents
 Remove documents satisfying some criteria:
+
     db.cities.remove(querydocument)
+    
 Remove an entire collection:
+
     db.cities.drop()
 
 ### MongDB console vs Python script:
+
 Python script: `db.cities.find_one()`
+
 MongDB console: `db.cities.findOne()`
