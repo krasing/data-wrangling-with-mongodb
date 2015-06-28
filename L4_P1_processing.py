@@ -66,7 +66,32 @@ def process_file(filename, fields):
 
         for line in reader:
             # YOUR CODE HERE
-            pass
+            cleaned_record = {}
+            for key in process_fields:
+                cleaned_record[fields[key]] = line[key].strip()
+            # convert 'NULL' to None
+            for key in cleaned_record.keys():
+                if cleaned_record[key]=='NULL':
+                    cleaned_record[key] = None
+            label = cleaned_record['label']
+            if has_redundancy(label):
+                index = label.find('(')
+                cleaned_record['label'] = label[0:index].strip()
+            name = cleaned_record['name']
+            if not name or has_non_alphanumeric(name):
+                cleaned_record['name'] = cleaned_record['label']
+            synonym = cleaned_record['synonym']
+            if synonym:
+                cleaned_record['synonym'] = parse_array(synonym)
+            classification = {}
+            classification['family'] = cleaned_record.pop('family')
+            classification['class'] = cleaned_record.pop('class')
+            classification['phylum'] = cleaned_record.pop('phylum')
+            classification['order'] = cleaned_record.pop('order')
+            classification['kingdom'] = cleaned_record.pop('kingdom')
+            classification['genus'] = cleaned_record.pop('genus')
+            cleaned_record['classification'] = classification
+            data.append(cleaned_record)
     return data
 
 
@@ -79,11 +104,24 @@ def parse_array(v):
         return v_array
     return [v]
 
+def has_non_alphanumeric(v):
+    if re.search('\W',v):
+        return True
+    return False
+    
+def has_redundancy(v):
+    index = v.find('(')
+    if index == -1:
+        return False
+    else:
+        return True
 
 def test():
     data = process_file(DATAFILE, FIELDS)
     print "Your first entry:"
     pprint.pprint(data[0])
+#    pprint.pprint(data[14])
+#    pprint.pprint(data[14]["synonym"])
     first_entry = {
         "synonym": None, 
         "name": "Argiope", 
