@@ -56,13 +56,24 @@ def add_field(filename, fields):
         for i in range(3):
             l = reader.next()
         # YOUR CODE HERE
+        for line in reader:
+            key = line['rdf-schema#label']
+            value = line['binomialAuthority_label']
+            if key.find('(')!=-1:
+                index = key.find('(')
+                key = key[0:index].strip()
+            if value!='NULL':
+                data[key] = value
 
     return data
 
 
 def update_db(data, db):
     # YOUR CODE HERE
-    pass
+    for key,value in data.items():
+        querydoc = {"label" : key}
+        updatedoc = {"$set" : {"classification.binomialAuthority" : value} }
+        db.arachnid.update(querydoc, updatedoc)
 
 
 def test():
@@ -86,3 +97,5 @@ def test():
 
 if __name__ == "__main__":
     test()
+#     data = add_field(DATAFILE, FIELDS)
+#     print data
