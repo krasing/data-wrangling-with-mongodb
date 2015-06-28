@@ -33,24 +33,28 @@ pip install pymongo
 To be able to use PyMongo, you need a running MongDB instance to connect to. For information on how to install MongoDB on your local machine, please see Course Materials.
 
 ---------------------------------------
+
+
+### Importing documents
+
+#### Directly from the system
+
 Documentation for mongoimport can be found [here] (http://docs.mongodb.org/manual/reference/program/mongoimport/)
 
-The command used in this video:
 ```
-    mongoimport -db dbname -c collectionname --file input-file.json
+    $mongoimport -db dbname -c collectionname --file input-file.json
 ```
 If no hostname and credentials are supplied, mongoimport will try to connect to the default localhost:27017
 
---------------------------------------
+#### Using PyMongo
 
-### Importing documents
-Preparing data from json:
+Getting dictionary from json:
 
     db = client.examples
     with open('arachnid.json') as f:
         data = json.loads(f.read())
 
-Preparing data from csv: see [autos.py](./autos.py)
+Getting dictionary from csv: see [autos.py](./autos.py)
 
 data - list of dictionaries
 
