@@ -42,7 +42,7 @@ To be able to use PyMongo, you need a running MongDB instance to connect to. For
 Documentation for mongoimport can be found [here] (http://docs.mongodb.org/manual/reference/program/mongoimport/)
 
 ```
-    $mongoimport -db dbname -c collectionname --file input-file.json
+    $mongoimport --db dbname -c collectionname --file input-file.json
 ```
 If no hostname and credentials are supplied, mongoimport will try to connect to the default localhost:27017
 
