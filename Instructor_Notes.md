@@ -74,6 +74,8 @@ Start with $, e.g. $gt, $lt, $lte, $ne
     
 [MongoDB Query Operators Reference](http://docs.mongodb.org/manual/reference/operator/query)
 
+{"field_name" : "value"}
+
 --------------------------------------
 ### Using shell commands
 To start mongo shell locally: Type following command in your terminal:
@@ -178,3 +180,130 @@ Remove an entire collection:
 Python script: `db.cities.find_one()`
 
 MongDB console: `db.cities.findOne()`
+
+### Aggregate
+
+    pipeline =[{ "$group" : {"_id" : "$source", "count" : {"$sum" : 1} }},
+        { "$sort" : {"count" : -1} } ]
+    result = db.tweets.aggregate(pipeline) 
+    pprint result.next()
+
+$project - extract fields from the original document and also insert computed fields
+
+$match - filter documents
+
+$skip - skip first n documents
+
+$limit - keep only first n documents
+
+$unwind - explode field with list to create multiple documents, appropriate for
+grouping
+
+```python
+# Who has the highest followers to friends ratio
+def highest_ratio():
+    result = db.tweets.aggregate([
+        {"$match" : {"user.friends_count" : {"$gt" : 0},
+                     "user.followers_count" : {"$gt" : 0}} },
+        {"project" : {"ratio" : {"$divide" : ["user.followers_count",
+                                              "user.friends_count"] },
+                       "screen_name" : "$user.screen_name"}},
+        {"$sort" : {"ratio" : -1 } },
+        {"$limit" : 1} ])
+```
+[Project Operator Documentation](http://docs.mongodb.org/manual/reference/operator/aggregation/project/#pipe._S_project)
+
+[Aggregation Framework Operator documentation](http://docs.mongodb.org/manual/reference/operator/aggregation/)
+
+
+### Example Tweet Query
+Of the users in the "Brasilia" timezone who have tweeted 100 times or more,
+who has the largest number of followers?
+
+```json
+{
+    "_id" : ObjectId("5304e2e3cc9e684aa98bef97"),
+    "text" : "First week of school is over :P",
+    "in_reply_to_status_id" : null,
+    "retweet_count" : null,
+    "contributors" : null,
+    "created_at" : "Thu Sep 02 18:11:25 +0000 2010",
+    "geo" : null,
+    "source" : "web",
+    "coordinates" : null,
+    "in_reply_to_screen_name" : null,
+    "truncated" : false,
+    "entities" : {
+        "user_mentions" : [ ],
+        "urls" : [ ],
+        "hashtags" : [ ]
+    },
+    "retweeted" : false,
+    "place" : null,
+    "user" : {
+        "friends_count" : 145,
+        "profile_sidebar_fill_color" : "E5507E",
+        "location" : "Ireland :)",
+        "verified" : false,
+        "follow_request_sent" : null,
+        "favourites_count" : 1,
+        "profile_sidebar_border_color" : "CC3366",
+        "profile_image_url" : "http://a1.twimg.com/profile_images/1107778717/phpkHoxzmAM_normal.jpg",
+        "geo_enabled" : false,
+        "created_at" : "Sun May 03 19:51:04 +0000 2009",
+        "description" : "",
+        "time_zone" : null,
+        "url" : null,
+        "screen_name" : "Catherinemull",
+        "notifications" : null,
+        "profile_background_color" : "FF6699",
+        "listed_count" : 77,
+        "lang" : "en",
+        "profile_background_image_url" : "http://a3.twimg.com/profile_background_images/138228501/149174881-8cd806890274b828ed56598091c84e71_4c6fd4d8-full.jpg",
+        "statuses_count" : 2475,
+        "following" : null,
+        "profile_text_color" : "362720",
+        "protected" : false,
+        "show_all_inline_media" : false,
+        "profile_background_tile" : true,
+        "name" : "Catherine Mullane",
+        "contributors_enabled" : false,
+        "profile_link_color" : "B40B43",
+        "followers_count" : 169,
+        "id" : 37486277,
+        "profile_use_background_image" : true,
+        "utc_offset" : null
+    },
+    "favorited" : false,
+    "in_reply_to_user_id" : null,
+    "id" : NumberLong("22819398300")
+}
+```
+
+```python
+def make_pipeline():
+    # complete the aggregation pipeline
+    pipeline = [{"$match" : {"user.time_zone" : "Brasilia",
+			    "user.statuses_count" : {"$gt" : 100}}},
+		{"$project" : {"followers" : "$user.followers_count", 
+		              "screen_name" : "$user.screen_name",
+		              "tweets" : "$user.statuses_count"}},
+		
+		{"$sort" : {"followers" : -1}},
+		{"$limit" : 1}]
+    return pipeline
+```
+
+### unwind example
+Question: Who included the most user mentions?
+
+```python
+def user_mentions():
+    result = db.tweets.aggregate([
+            {"$unwind" : "$entities.user_mentions" },
+            {"$group" : { "_id" : "$user.screen_name", 
+                          "count" : { "$sum" : 1 } } },
+            {"$sort" : { "count" : -1 } },
+            {"$limit" : 1} ] )
+            
+    return result
