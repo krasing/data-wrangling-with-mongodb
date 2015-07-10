@@ -307,3 +307,22 @@ def user_mentions():
             {"$limit" : 1} ] )
             
     return result
+    
+### $group operators
+
+$sum, $first, $last, $max, $min, $avg
+
+$push, $addToSet (dealing with arrays)
+
+```python
+def unique_hashtags_by_user():
+    result = db.tweets.aggregate([
+        {"$unwind" : "$entities.hashtags"},
+        {"$group" : { "_id" : "$user.screen_name",
+                      "unique_hashtags" : {
+                         "$addToSet" : "$entities.hashtags.text"
+                       } } },
+        {"$sort" : { "_id" : -1 } } ] )
+    return result
+```
+[Group Aggregation Operators documentation] (http://docs.mongodb.org/manual/reference/operator/aggregation-group/)
