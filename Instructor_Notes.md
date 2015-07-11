@@ -307,6 +307,7 @@ def user_mentions():
             {"$limit" : 1} ] )
             
     return result
+```
     
 ### $group operators
 
@@ -326,3 +327,23 @@ def unique_hashtags_by_user():
     return result
 ```
 [Group Aggregation Operators documentation] (http://docs.mongodb.org/manual/reference/operator/aggregation-group/)
+
+### Unwind, addToSet and unwind again
+Question: Who has mentioned the most unique users?
+
+```python
+def user_mentions():
+    result = db.tweets.aggregate([
+            {"$unwind" : "$entities.user_mentions" },
+            {"$group" : { "_id" : "$user.screen_name", 
+                          "mset" : {
+                              "$addToSet" : "$entities.user_mentions.screen_name"
+                           } } },
+            {"$unwind" : "$mset"},
+            {"$group" : { "_id" : "$_id", "count" : {"$sum" : 1}}},
+            {"$sort" : { "count" : -1 } },
+            {"$limit" : 1} ] )
+            
+    return result
+```
+
