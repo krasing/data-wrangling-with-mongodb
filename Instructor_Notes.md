@@ -347,3 +347,23 @@ def user_mentions():
     return result
 ```
 
+### Indexes
+
+    use osm
+    db.nodes.find().pretty()
+    db.nodes.find({"tg" : {"k" : "name", "v" : "Giordanos"}})
+    db.ensureIndex({"tg" : 1})
+    
+Visit [MongoDB University] (https://university.mongodb.com/) or look at [MongoDB Reference cards] (https://www.mongodb.com/reference) 
+or [MongoDB documentation on Indexes] (http://docs.mongodb.org/manual/indexes/).
+
+### Geospatial Indexes
+Get locations near specified location.
+
+Field for location - array of two elements
+    location: [x, y]
+Create index:
+    ensureIndex({"location" : })
+Use operator $near
+
+{"loc" : {"$near" : [41.94, -87.65]}, "tg" : {"$exists" : 1} }
