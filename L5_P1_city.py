@@ -36,7 +36,9 @@ def get_db(db_name):
 
 def make_pipeline():
     # complete the aggregation pipeline
-    pipeline = [ ]
+    pipeline = [ {"$match" : {"name" : {"$exists" : 1, "$ne" : "NULL"}}},
+                {"$group" : {"_id" : "$name",  "count" : {"$sum" : 1}}}, 
+                {"$sort" : {"count" : -1} }, {"$limit" : 1} ]
     return pipeline
 
 def aggregate(db, pipeline):
@@ -48,6 +50,7 @@ if __name__ == '__main__':
     pipeline = make_pipeline()
     result = aggregate(db, pipeline)
     import pprint
-    pprint.pprint(result["result"][0])
-    assert len(result["result"]) == 1
-    assert result["result"][0] == {'_id': 'Shahpur', 'count': 6}
+    res = result.next()
+    pprint.pprint(res)
+#    assert len(result["result"]) == 1
+#    assert result["result"][0] == {'_id': 'Shahpur', 'count': 6}
