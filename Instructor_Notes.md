@@ -1,4 +1,6 @@
-## Notes
+## Notes, Mongo database
+
+### Instructor notes
 
 MongoDB http://www.mongodb.com/ is a NoSQL database http://en.wikipedia.org/wiki/NoSQL.
 
@@ -65,7 +67,6 @@ arachnid - collection
     for a in data:
         db.arachnid.insert(a)
 
---------------------------------------
 ### Operators
 Start with $, e.g. $gt, $lt, $lte, $ne
 
@@ -78,7 +79,6 @@ Start with $, e.g. $gt, $lt, $lte, $ne
 
 {"field_name" : "value"}
 
---------------------------------------
 ### Using shell commands
 To start mongo shell locally: Type following command in your terminal:
 
@@ -91,7 +91,6 @@ To start mongo shell locally: Type following command in your terminal:
     > db.collection_names()
 
 
---------------------------------------
 
 ### Regular expressions - Perl compatible (PCRE)
     query = {"moto" : {"$regex" : "[Ff]riendship|[Hh]appiness"}}
@@ -101,7 +100,6 @@ To start mongo shell locally: Type following command in your terminal:
     db.autos.find({"modelYear" : {"$all" : [1965, 1966, 1967]}}).count()
     db.autos.find({"dimensions.weight" : {"$gt" : 50000}})
     
----------------------------------------
 
 ### Example code
 
@@ -370,26 +368,4 @@ Use operator $near
 
 {"loc" : {"$near" : [41.94, -87.65]}, "tg" : {"$exists" : 1} }
 
----------------------------------------
 
-### 
-
-- explore the dataset to get a feeling about it
-
-    less data.osm
-    ls -lh data.osm
-    
-- read documentation - search openstreetmap documentation to clarify basic data features like nodes, ways, relations
-
-You can find the [OSM XML article] (https://wiki.openstreetmap.org/wiki/OSM_XML) on the OSM wiki
-
-Find all top level tags in the dataset (revise [audit.py](audit.py))
-
-    tags = {}
-    for event, elem in ET.iterparse(filename):
-        tag = elem.tag
-        if tag in tags:
-            tags[tag] += 1
-        else:
-            tags[tag] = 1
-    return tags
