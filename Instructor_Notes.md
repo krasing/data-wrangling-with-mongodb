@@ -381,9 +381,9 @@ Use operator $near
     
 - read documentation - search openstreetmap documentation to clarify basic data features like nodes, ways, relations
 
-You can find the (OSM XML article) [https://wiki.openstreetmap.org/wiki/OSM_XML] on the OSM wiki
+You can find the [OSM XML article] (https://wiki.openstreetmap.org/wiki/OSM_XML) on the OSM wiki
 
-Find all top level tags in the dataset (revise (audit.py)[audit.py])
+Find all top level tags in the dataset (revise [audit.py](audit.py))
 
     tags = {}
     for event, elem in ET.iterparse(filename):
