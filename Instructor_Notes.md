@@ -1,3 +1,5 @@
+## Notes
+
 MongoDB http://www.mongodb.com/ is a NoSQL database http://en.wikipedia.org/wiki/NoSQL.
 
 See this official site for JSON data format http://www.json.org/.
