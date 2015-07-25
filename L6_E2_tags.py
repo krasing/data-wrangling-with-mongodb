@@ -26,7 +26,16 @@ problemchars = re.compile(r'[=\+/&<>;\'"\?%#$@\,\. \t\r\n]')
 def key_type(element, keys):
     if element.tag == "tag":
         # YOUR CODE HERE
-        pass
+        kvalue = element.attrib['k']
+        if lower.match(kvalue):
+            keys['lower'] += 1
+        elif lower_colon.match(kvalue):
+            keys['lower_colon'] += 1
+        elif problemchars.search(kvalue):
+            print kvalue
+            keys['problemchars'] += 1
+        else:
+            keys['other'] += 1
         
     return keys
 
