@@ -5,7 +5,7 @@
 
     ls -lh data.osm
 
-### Eead documentation - search openstreetmap documentation
+### Read documentation - search openstreetmap documentation
 clarify basic data features like nodes, ways, relations
 
 You can find the [OSM XML article]
@@ -38,7 +38,7 @@ def audit():
                 if is_street_name(tag):
                     audit_street_type(street_types, tag.attrib['v'])
     pprint.pprint(dict(street_types))
-def os_street_name(elem):
+def is_street_name(elem):
     return (elem.attrib['k'] == "addr:street")
 ```
 
