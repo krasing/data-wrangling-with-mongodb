@@ -18,9 +18,9 @@ import codecs
 
 OSMFILE = "sample.osm"
 re.UNICODE
-street_type_re = re.compile(r'^\b\S+\.?', re.IGNORECASE)
+street_type_re = re.compile(ur'^\b\S+\.?', re.IGNORECASE | re.U)
 
-expected = [u'улица', u'бул.']
+expected = [u'ул.', u'бул.']
 
 # UPDATE THIS VARIABLE
 mapping = { "St": "Street",
