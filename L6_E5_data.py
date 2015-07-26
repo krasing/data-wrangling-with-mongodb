@@ -97,6 +97,42 @@ def shape_element(element):
     node = {}
     if element.tag == "node" or element.tag == "way" :
         # YOUR CODE HERE
+        node["created"] = {}
+        if element.tag == "node":
+            node["pos"] = [0., 0.]
+            node["type"] = "node"
+        if element.tag == "way":
+            node["node_refs"] = []
+            node["type"] = "way"
+        for key,value in element.attrib.items():
+            if key in CREATED:
+                node["created"][key] = value
+            elif key == 'lat':
+                node["pos"][0] = float(value)
+            elif key == 'lon':
+                node["pos"][1] = float(value)
+            else:
+                node[key] = value
+        for tag in element.iter('tag'):
+            kvalue = tag.attrib['k']
+            value = tag.attrib['v']
+            if problemchars.search(kvalue):
+                continue
+            elif lower_colon.match(kvalue):
+                composed = re.split(':',kvalue)
+                if len(composed)==2 and composed[0]=='addr':
+                    address_fiels = composed[1]
+                    if node.get('address'):
+                        node['address'][address_fiels] = value
+                    else:
+                        node['address'] = {address_fiels : value}
+                elif composed[0]!='addr':
+                    node[kvalue] = value
+
+        for nd in element.iter('nd'):
+            ref = nd.attrib['ref']
+            node["node_refs"].append(ref)
+    
         
         return node
     else:
@@ -122,8 +158,8 @@ def test():
     # NOTE: if you are running this code on your computer, with a larger dataset, 
     # call the process_map procedure with pretty=False. The pretty=True option adds 
     # additional spaces to the output, making it significantly larger.
-    data = process_map('example.osm', True)
-    #pprint.pprint(data)
+    data = process_map('example.osm', False)
+    pprint.pprint(data)
     
     correct_first_elem = {
         "id": "261114295", 
