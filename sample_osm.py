@@ -3,7 +3,7 @@
 
 import xml.etree.ElementTree as ET  # Use cElementTree or lxml if too slow
 
-OSM_FILE = "osm_file.osm"  # Replace this with your osm file
+OSM_FILE = "data/sofia_bulgaria.osm"  # Replace this with your osm file
 SAMPLE_FILE = "sample.osm"
 
 

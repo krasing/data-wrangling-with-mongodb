@@ -35,7 +35,7 @@ Find all top level tags in the dataset (revise audit.py)
 "changeset":"17206049",
 "timestamp":"2013-08-03T16:43:42Z",
 "user":"linuxUser16",
-"uid":"1219059"
+"uid":"1219059",
 "pos": [41.9757030, -87.6921867],
 "tags": [
          { "k" : "addr:housenumber", "v" : "5157"},
@@ -69,7 +69,7 @@ OR
 "phone": "1 (773)-271-5176"
 }
 ```
-### 
+### Audit street names
 
 ```python
 def audit():
@@ -82,4 +82,22 @@ def audit():
 def is_street_name(elem):
     return (elem.attrib['k'] == "addr:street")
 ```
+
+### Improve street names
+
+### Prepare for the database
+
+## My dataset
+$ python L6_P1_mapparser.py 
+{'bounds': 1,
+ 'member': 18709,
+ 'nd': 845661,
+ 'node': 699233,
+ 'osm': 1,
+ 'relation': 747,
+ 'tag': 283722,
+ 'way': 97734}
+
+ $ python L6_P2_tags.py 
+{'lower': 236016, 'lower_colon': 36531, 'other': 11175, 'problemchars': 0}
 
