@@ -57,8 +57,8 @@ def process_map(filename):
 
 def test():
 
-#    tags = process_map('data/sofia_bulgaria.osm')
-    tags = process_map('sample.osm')
+    tags = process_map('data/sofia_bulgaria.osm')
+#    tags = process_map('sample.osm')
     dtags = dict(tags)
     #print repr(dtags).decode('unicode-escape')
     #pprint.pprint(repr(dtags).decode('unicode-escape'))
