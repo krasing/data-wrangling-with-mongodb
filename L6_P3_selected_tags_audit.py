@@ -24,21 +24,40 @@ def get_tags(element, tags):
     for tag in element.iter('tag'):
         k = tag.attrib['k']
         v = tag.attrib['v']
-        tags[k].add(v)
+        if k=='addr:postcode' or k == 'postal_code':
+            if not v.isdigit():
+                tags[k].add(v)
+    return tags
+    
+def get_phone_tags(element, tags):
+    for tag in element.iter('tag'):
+        k = tag.attrib['k']
+        v = tag.attrib['v']
+        if k=='contact:phone' or k == 'phone':
+            if not v.isdigit():
+                tags[k].add(v)
     return tags
 
+def get_amenity(element, tags):
+    for tag in element.iter('tag'):
+        k = tag.attrib['k']
+        v = tag.attrib['v']
+        if k=='amenity' and v == 'yes':
+            tags[k].add(v)
+    return tags
 
 def process_map(filename):
     tags = defaultdict(set)
     with codecs.open(filename, "r") as osm_file:
       for _, element in ET.iterparse(osm_file):
-        tags = get_tags(element, tags)
+        tags = get_amenity(element, tags)
 
     return tags
 
 
 def test():
 
+#    tags = process_map('data/sofia_bulgaria.osm')
     tags = process_map('sample.osm')
     dtags = dict(tags)
     #print repr(dtags).decode('unicode-escape')
