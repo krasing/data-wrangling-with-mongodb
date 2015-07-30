@@ -16,11 +16,21 @@ import re
 import pprint
 import codecs
 
+class MyPrettyPrinter(pprint.PrettyPrinter):
+    def format(self, object, context, maxlevels, level):
+        if isinstance(object, unicode):
+            return (object.encode('utf8'), True, False)
+        return pprint.PrettyPrinter.format(self, object, context, maxlevels, level)
+
+
 OSMFILE = "sample.osm"
 re.UNICODE
-street_type_re = re.compile(ur'^\b\S+\.?', re.IGNORECASE | re.U)
+# regular expression to extract the street type
+# street_type_re = re.compile(ur'^\b\S+\.?', re.IGNORECASE | re.U)
+#street_type_re = re.compile(ur'^\b\S+\s*\.', re.IGNORECASE | re.U)
+street_type_re = re.compile(ur'^\b\S+\s*\.?\s', re.IGNORECASE | re.U)
 
-expected = [u'ул.', u'бул.']
+expected = [u'ул. ', u'бул. ', u'пл. ']
 
 # UPDATE THIS VARIABLE
 mapping = { "St": "Street",
@@ -68,7 +78,7 @@ def update_name(name, mapping):
 
 def test():
     st_types = audit(OSMFILE)
-    pprint.pprint(dict(st_types))
+    MyPrettyPrinter().pprint(dict(st_types))
 
     #for st_type, ways in st_types.iteritems():
         #for name in ways:
