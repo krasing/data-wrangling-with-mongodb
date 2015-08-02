@@ -215,7 +215,7 @@ def shape_element(element):
     else:
         return None
 
-def process_map(filename, pretty = False):
+def audit_map(filename, pretty = False):
     postcodes = {}
     street_types = defaultdict(set)
     
@@ -225,32 +225,36 @@ def process_map(filename, pretty = False):
             if elem.tag == "node" or elem.tag == "way":
                 # audit street names                
                 for tag in elem.iter("tag"):
-#                    if is_street_name(tag):
-#                        audit_street_type(street_types, tag.attrib['v'])
+                    if is_street_name(tag):
+                        audit_street_type(street_types, tag.attrib['v'])
                     if is_postcode(tag):
                         audit_postcode(postcodes, tag.attrib['v'])
                     if is_phonenum(tag):
                         v = tag.attrib['v']
                         audit_phone(v)
                  
+    return postcodes, street_types
+
+def clean_map(filename, pretty = False):
+                 
     # clean and reshape dataset
     file_out = "{0}.json".format(filename)
+    i = 0
 
     with codecs.open(file_out, "w") as fo:
         for _, element in ET.iterparse(filename):
             el = shape_element(element)
             if el:
+                print i
+                i += 1
                 if pretty:
                     fo.write(json.dumps(el, indent=2).decode('unicode-escape') +"\n")
                 else:
                     fo.write(json.dumps(el).decode('unicode-escape') + "\n")
-    return postcodes, street_types
-
 
 def test():
 
-    (postcodes, street_types) = process_map('sofia_bulgaria.osm')
-#    (postcodes, street_types) = process_map('sample.osm')
+    (postcodes, street_types) = audit_map('sample.osm')
     postcodesd = dict(postcodes)
     
     print 'Inconsistent Post codes:'
@@ -259,8 +263,7 @@ def test():
     print 'Unexpected street types:'
     MyPrettyPrinter().pprint(dict(street_types))
     
-#    with codecs.open('tmp.txt', "w") as fo:
-#        fo.write(repr(dtags).decode('unicode-escape'))
+    clean_map('sofia_bulgaria.osm')
 
 
 
