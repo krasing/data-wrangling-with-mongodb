@@ -16,15 +16,13 @@ street_type_re = re.compile(ur'^\b\S+\s*\.?\s', re.IGNORECASE | re.U)
 expected_street = [u'ул. ', u'бул. ', u'пл. ']
 
 lower_colon = re.compile(r'^([a-z]|_)*:([a-z]|_)*$')
-problemchars = re.compile(ur'[=\+/&<>;\'"\?%#$@\,\. \t\r\n]')
+problemchars = re.compile(ur'[=\+/&<>;\'"\?%#$@\,\. \t\r\n]', re.U)
+problemchars2 = re.compile(ur'[\\]', re.U)
+quoteproblem = re.compile(ur'&.*?;')
 
 CREATED = [ "version", "changeset", "timestamp", "user", "uid"]
 
-mapping = { u'ул. ': "Street",
-            "St.": "Street",
-            "Ave": "Avenue",
-            "Rd.": "Road"
-            }
+
 
 class MyPrettyPrinter(pprint.PrettyPrinter):
     def format(self, object, context, maxlevels, level):
@@ -163,6 +161,9 @@ def shape_element(element):
             node["node_refs"] = []
             node["type"] = "way"
         for key,value in element.attrib.items():
+#            if quoteproblem.search(value):
+#                quoteproblem.sub('', value)
+#                print value
             if key in CREATED:
                 node["created"][key] = value
             elif key == 'lat':
@@ -176,8 +177,13 @@ def shape_element(element):
             value = tag.attrib['v']
             if problemchars.search(kvalue):
                 continue
+            if problemchars2.search(value):
+                continue
+#            if quoteproblem.search(value):
+#                quoteproblem.sub('', value)
+#                print value
             
-            elif is_phonenum(tag):
+            if is_phonenum(tag):
                 number_string = strip_phone(value)
                 (code, local) = split_phone(number_string)
                 if 'phone' not in node.keys():
@@ -200,11 +206,11 @@ def shape_element(element):
                     if composed[1] == 'street':
                         if is_bad_street_type(value):
                             value = improve_street_name(value)
-                    node['address'][address_fiels] = value
-
-  
+                    node['address'][address_fiels] = value  
                 elif composed[0]!='addr':
                     node[kvalue] = value
+            else:
+                node[kvalue] = value
 
         for nd in element.iter('nd'):
             ref = nd.attrib['ref']
@@ -235,7 +241,7 @@ def audit_map(filename, pretty = False):
                  
     return postcodes, street_types
 
-def clean_map(filename, pretty = False):
+def process_map(filename, pretty = False):
                  
     # clean and reshape dataset
     file_out = "{0}.json".format(filename)
@@ -250,7 +256,7 @@ def clean_map(filename, pretty = False):
                 if pretty:
                     fo.write(json.dumps(el, indent=2).decode('unicode-escape') +"\n")
                 else:
-                    fo.write(json.dumps(el).decode('unicode-escape') + "\n")
+                    fo.write(json.dumps(el, ensure_ascii=True).decode('unicode-escape') + "\n")
 
 def test():
 
@@ -263,8 +269,8 @@ def test():
     print 'Unexpected street types:'
     MyPrettyPrinter().pprint(dict(street_types))
     
-    clean_map('sofia_bulgaria.osm')
-
+    process_map('sofia_bulgaria.osm')
+    #process_map('sample.osm')
 
 
 if __name__ == "__main__":
