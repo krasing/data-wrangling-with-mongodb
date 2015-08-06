@@ -101,3 +101,6 @@ $ python L6_P1_mapparser.py
  $ python L6_P2_tags.py 
 {'lower': 236016, 'lower_colon': 36531, 'other': 11175, 'problemchars': 0}
 
+### Some errors and warnings
+Failed: error processing document #307914: invalid character 'D' in string escape code
+due 
